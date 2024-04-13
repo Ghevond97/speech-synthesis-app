@@ -30,20 +30,19 @@ const parseContentIntoSentences = (content: string) => {
 
   const arr = speakTagRemoved.split("<s>");
   console.log("SPLIT", arr);
-  const sentencesArr = arr
-    .map((elem) => {
+  const sentencesArr: string[] = arr
+    .map((elem): string | undefined => {
       if (elem !== "") {
         const indexOfTag = elem.indexOf("</s>");
         const word = elem.slice(0, indexOfTag);
         console.log("sentence", word);
         return word;
       }
+      return undefined;
     })
-    .filter((elem) => elem !== undefined);
-
+    .filter((elem): elem is string => typeof elem === "string");
   console.log("sentencesArr", sentencesArr);
-
-  return sentencesArr || [];
+  return sentencesArr;
 };
 
 export { fetchContent, parseContentIntoSentences };

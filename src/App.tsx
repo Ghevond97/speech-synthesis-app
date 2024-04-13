@@ -20,6 +20,7 @@ function App() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
   const speech = useSpeech(sentences);
 
   return (
@@ -29,7 +30,12 @@ function App() {
         <CurrentlyReading />
       </div>
       <div>
-        <Controls />
+        <Controls
+          play={speech.play}
+          pause={speech.pause}
+          loadNewContent={speech.load}
+          state={speech.playbackState}
+        />
       </div>
     </div>
   );
