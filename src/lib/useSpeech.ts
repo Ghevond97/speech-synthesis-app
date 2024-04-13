@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import { PlayingState } from './speech';
+import { PlayingState, createSpeechEngine } from "./speech";
 
 /*
   @description
@@ -16,8 +16,39 @@ const useSpeech = (sentences: Array<string>) => {
 
   const [playbackState, setPlaybackState] = useState<PlayingState>("paused");
 
-  const play = () => {};
-  const pause = () => {};
+  const args = {
+    onBoundary: (e: SpeechSynthesisEvent) => {
+      console.log("E", e);
+      e.preventDefault();
+    },
+    onEnd: (e: SpeechSynthesisEvent) => {
+      e.preventDefault();
+      console.log("e");
+    },
+    onStateUpdate: (state: PlayingState) => {
+      setPlaybackState(state);
+    },
+  };
+  const speechEngine = createSpeechEngine(args);
+  if (sentences.length > 0) {
+    console.log("HERE");
+    speechEngine.load(sentences[0]);
+
+    const synth = window.speechSynthesis;
+    if (speechEngine.state.utterance) {
+      console.log("STAT#");
+      synth.speak(speechEngine.state.utterance);
+    }
+  }
+
+  const play = () => {
+    speechEngine.play();
+  };
+  const pause = () => {
+    speechEngine.pause();
+  };
+
+  console.log("SPEECH ENGINE", speechEngine);
 
   return {
     currentSentenceIdx,

@@ -53,9 +53,10 @@ const createSpeechEngine = (options: SpeechEngineOptions) => {
   };
 
   const play = () => {
+    console.log("PLAY");
     if (!state.utterance) throw new Error("No active utterance found to play");
     state.utterance.onstart = () => {
-      console.log('waiting for onstart')
+      console.log("waiting for onstart");
       options.onStateUpdate("playing");
     };
     window.speechSynthesis.cancel();
