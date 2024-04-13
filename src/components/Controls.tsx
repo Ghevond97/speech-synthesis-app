@@ -19,9 +19,9 @@ export const Controls = ({
 }) => {
   return (
     <div>
-      <button onClick={play}>Play</button>{" "}
-      <button onClick={pause}>Pause</button>{" "}
-      <button onClick={loadNewContent}>Load</button>
+      <button onClick={() => play()}>Play</button>{" "}
+      <button onClick={() => pause()}>Pause</button>{" "}
+      <button onClick={() => loadNewContent()}>Load</button>
     </div>
   );
 };
