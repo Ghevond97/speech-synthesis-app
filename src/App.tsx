@@ -5,37 +5,53 @@ import { Controls } from "./components/Controls";
 import { CurrentlyReading } from "./components/CurrentlyReading";
 import { fetchContent, parseContentIntoSentences } from "./lib/content";
 import { useSpeech } from "./lib/useSpeech";
+import { PlayingState } from "./lib/speech";
 
 function App() {
   const [sentences, setSentences] = useState<Array<string>>([]);
-  // const { currentWord, currentSentence, controls } = useSpeech(sentences);
+
   const fetchData = useCallback(async () => {
-    const data = await fetchContent();
-    console.log("DATA", data);
-    if (data) {
-      setSentences(parseContentIntoSentences(data));
+    try {
+      const data = await fetchContent();
+      console.log("DATA", data);
+      if (data) {
+        const parsedSentences = parseContentIntoSentences(data);
+        setSentences(parsedSentences);
+        return parsedSentences;
+      }
+    } catch (error) {
+      console.error("Error fetching content:", error);
     }
-  }, [fetchContent, parseContentIntoSentences]);
+  }, []);
+
+  const loadNewContent = async () => {
+    await fetchData(); // Fetch new sentences
+    // speech.loadNewContent;sq
+    speech.load();
+  };
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
+    if (sentences.length === 0) {
+      loadNewContent();
+    }
+  }, [sentences]);
   const speech = useSpeech(sentences);
 
   return (
     <div className="App">
       <h1>Text to speech</h1>
       <div>
-        <CurrentlyReading />
+        <CurrentlyReading sentences={sentences} />
       </div>
       <div>
-        <Controls
-          play={speech.play}
-          pause={speech.pause}
-          loadNewContent={speech.load}
-          state={speech.playbackState}
-        />
+        {speech && (
+          <Controls
+            play={speech.play}
+            pause={speech.pause}
+            loadNewContent={loadNewContent}
+            state={speech.playbackState}
+          />
+        )}
       </div>
     </div>
   );

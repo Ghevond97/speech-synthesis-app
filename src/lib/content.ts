@@ -9,11 +9,15 @@ interface Response {
   content: string;
 }
 const fetchContent = async (url = API_URL): Promise<string> => {
-  const response: Response = await fetch(url).then((response) =>
-    response.json()
-  );
-  console.log("response", response);
-  return response.content;
+  try {
+    const response: Response = await fetch(url).then((response) =>
+      response.json()
+    );
+    console.log("response", response);
+    return response.content;
+  } catch {
+    return "<speak><s>There was an error</s></speak>";
+  }
 };
 
 /**
@@ -29,19 +33,16 @@ const parseContentIntoSentences = (content: string) => {
   console.log("reamoved", speakTagRemoved);
 
   const arr = speakTagRemoved.split("<s>");
-  console.log("SPLIT", arr);
   const sentencesArr: string[] = arr
     .map((elem): string | undefined => {
       if (elem !== "") {
         const indexOfTag = elem.indexOf("</s>");
         const word = elem.slice(0, indexOfTag);
-        console.log("sentence", word);
         return word;
       }
       return undefined;
     })
     .filter((elem): elem is string => typeof elem === "string");
-  console.log("sentencesArr", sentencesArr);
   return sentencesArr;
 };
 
