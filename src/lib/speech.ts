@@ -28,12 +28,15 @@ const createSpeechEngine = (options: SpeechEngineOptions) => {
     config: {
       rate: 1,
       volume: 1,
-      voice: window.speechSynthesis.getVoices()[0],
+      voice: null,
     },
   };
 
   window.speechSynthesis.onvoiceschanged = (e) => {
-    state.config.voice = speechSynthesis.getVoices()[0];
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length > 0) {
+      state.config.voice = voices[0];
+    }
   };
 
   const load = (text: string) => {
@@ -53,10 +56,8 @@ const createSpeechEngine = (options: SpeechEngineOptions) => {
   };
 
   const play = () => {
-    console.log("PLAY");
     if (!state.utterance) throw new Error("No active utterance found to play");
     state.utterance.onstart = () => {
-      console.log("waiting for onstart");
       options.onStateUpdate("playing");
     };
     window.speechSynthesis.cancel();

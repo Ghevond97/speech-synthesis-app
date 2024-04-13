@@ -13,7 +13,6 @@ const fetchContent = async (url = API_URL): Promise<string> => {
     const response: Response = await fetch(url).then((response) =>
       response.json()
     );
-    console.log("response", response);
     return response.content;
   } catch {
     return "<speak><s>There was an error</s></speak>";
@@ -25,12 +24,14 @@ const fetchContent = async (url = API_URL): Promise<string> => {
  * Avoid using DOMParser for implementing this function.
  */
 const parseContentIntoSentences = (content: string) => {
+  if (!content.startsWith("<speak>")) {
+    throw new Error();
+  }
   const speakTagRemoved = content
     .replace("<speak>", "")
     .replace("</speak>", "")
     .replace("<p>", "")
     .replace("</p", "");
-  console.log("reamoved", speakTagRemoved);
 
   const arr = speakTagRemoved.split("<s>");
   const sentencesArr: string[] = arr

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { PlayingState, createSpeechEngine, SpeechEngine } from "./speech";
 
@@ -16,12 +16,28 @@ const useSpeech = (sentences: Array<string>) => {
   const [currentWordRange, setCurrentWordRange] = useState([0, 0]);
   const [playbackState, setPlaybackState] = useState<PlayingState>("paused");
   const [speechEngine, setSpeechEngine] = useState<SpeechEngine | null>(null);
+  const currentWordRangeRef = useRef<[number, number]>([0, 0]);
 
   useEffect(() => {
-    console.log("sentences", sentences);
     if (sentences.length > 0) {
       const args = {
-        onBoundary: (e: SpeechSynthesisEvent) => {},
+        onBoundary: (e: SpeechSynthesisEvent) => {
+          // Extract the current word range from the event
+
+          e.preventDefault();
+          const wordRange: [number, number] = [
+            e.charIndex,
+            e.charIndex + e.charLength,
+          ];
+          setCurrentWordRange(wordRange);
+
+          // Get the current word from the sentence using the word range
+          const currentWord = sentences[currentSentenceIdx].substring(
+            wordRange[0],
+            wordRange[1]
+          );
+          currentWordRangeRef.current = wordRange;
+        },
         onEnd: (e: SpeechSynthesisEvent) => {
           if (currentSentenceIdx === sentences.length - 1) {
             setCurrentSentenceIdx(0);
@@ -29,6 +45,7 @@ const useSpeech = (sentences: Array<string>) => {
             setCurrentSentenceIdx(currentSentenceIdx + 1);
           }
           setPlaybackState("paused");
+          currentWordRangeRef.current = [0, 0];
         },
         onStateUpdate: (state: PlayingState) => {
           setPlaybackState(state);
@@ -68,6 +85,10 @@ const useSpeech = (sentences: Array<string>) => {
   return {
     currentSentenceIdx,
     playbackState,
+    currentWordRange: [
+      Number(currentWordRangeRef.current[0]),
+      Number(currentWordRangeRef.current[1]),
+    ] as [number, number],
     load,
     play,
     pause,

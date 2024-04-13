@@ -41,7 +41,13 @@ function App() {
     <div className="App">
       <h1>Text to speech</h1>
       <div>
-        <CurrentlyReading sentences={sentences} />
+        {sentences && (
+          <CurrentlyReading
+            sentences={sentences}
+            currentSentenceIdx={speech.currentSentenceIdx}
+            currentWordRange={speech.currentWordRange}
+          />
+        )}
       </div>
       <div>
         {speech && (

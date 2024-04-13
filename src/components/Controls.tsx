@@ -21,7 +21,7 @@ export const Controls = ({
     <div>
       <button onClick={() => play()}>Play</button>{" "}
       <button onClick={() => pause()}>Pause</button>{" "}
-      <button onClick={() => loadNewContent()}>Load</button>
+      <button onClick={() => loadNewContent()}>Load new content</button>
     </div>
   );
 };

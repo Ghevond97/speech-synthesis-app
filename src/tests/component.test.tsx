@@ -1,21 +1,11 @@
-import React from 'react';
+import React from "react";
 
-import {
-  afterEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest';
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import {
-  cleanup,
-  render,
-  screen,
-} from '@testing-library/react';
+import { cleanup, render, screen } from "@testing-library/react";
 
-import { Controls } from '../components/Controls';
-import { CurrentlyReading } from '../components/CurrentlyReading';
+import { Controls } from "../components/Controls";
+import { CurrentlyReading } from "../components/CurrentlyReading";
 
 const sentences = [
   "This is a sentence.",
@@ -38,7 +28,7 @@ describe("Currently Reading Component", () => {
 
     sentences.forEach((sentence) => {
       expect(
-        screen.getByText(sentence, {
+        screen.getAllByText(sentence, {
           normalizer: (text) => text.trim(),
           exact: false,
         })
@@ -155,7 +145,6 @@ describe("Controls Component", () => {
     expect(loadNewContent).toHaveBeenCalled();
   });
 
-  
   it("Should call the pause function when pause  is clicked", () => {
     const pause = vi.fn();
     render(

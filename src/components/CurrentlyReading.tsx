@@ -16,8 +16,20 @@ export const CurrentlyReading = ({
   currentSentenceIdx: number;
   sentences: string[];
 }) => {
+  const currentSentence = sentences[currentSentenceIdx];
+  const currentWord =
+    currentSentence &&
+    currentSentence.substring(currentWordRange[0], currentWordRange[1]);
   return (
     <div data-testid="currently-reading">
+      {currentSentence ? (
+        <>
+          <span data-testid="current-word">
+            {currentWord || currentSentence.split(" ")[0]}
+          </span>
+          <p data-testid="current-sentence">{currentSentence}</p>
+        </>
+      ) : null}
       {sentences && <div>{sentences}</div>}
     </div>
   );
