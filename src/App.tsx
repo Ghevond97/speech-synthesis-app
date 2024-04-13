@@ -13,7 +13,6 @@ function App() {
   const fetchData = useCallback(async () => {
     try {
       const data = await fetchContent();
-      console.log("DATA", data);
       if (data) {
         const parsedSentences = parseContentIntoSentences(data);
         setSentences(parsedSentences);
